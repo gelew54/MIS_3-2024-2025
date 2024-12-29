@@ -25,7 +25,22 @@ class JokeTypesScreen extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Error: ${snapshot.error}', style: const TextStyle(fontSize: 18)),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Retry the API call
+                      (context as Element).reassemble();
+                    },
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('No joke types found'));
           }
@@ -51,14 +66,18 @@ class JokeTypesScreen extends StatelessWidget {
                 },
                 child: Card(
                   color: Colors.red.shade100,
-                  elevation: 4,
+                  elevation: 6,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
+                    borderRadius: BorderRadius.circular(16.0),
                   ),
                   child: Center(
                     child: Text(
                       types[index],
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),

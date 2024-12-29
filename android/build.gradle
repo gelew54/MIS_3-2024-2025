@@ -1,3 +1,15 @@
+buildscript {
+    repositories {
+        google()  // Google Maven repository
+        mavenCentral()  // Central Maven repository
+    }
+    dependencies {
+        // Gradle plugin version (adjust based on your Android Studio version)
+        classpath 'com.android.tools.build:gradle:8.0.2'
+        classpath 'com.google.gms:google-services:4.4.1'  // Google Services plugin
+    }
+}
+
 allprojects {
     repositories {
         google()
@@ -6,11 +18,14 @@ allprojects {
 }
 
 rootProject.buildDir = "../build"
+
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
-    project.evaluationDependsOn(":app")
+
+    // Suppress Java compatibility warnings
+    tasks.withType(JavaCompile) {
+        options.compilerArgs += ["-Xlint:-options"]
+    }
 }
 
 tasks.register("clean", Delete) {

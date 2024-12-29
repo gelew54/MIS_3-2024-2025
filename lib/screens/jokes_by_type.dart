@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import '../models/joke.dart';
 import '../services/api_services.dart';
+import '../main.dart';
 
 class JokesByTypeScreen extends StatelessWidget {
   final String type;
 
-  const JokesByTypeScreen({Key? key, required this.type}) : super(key: key);
+  const JokesByTypeScreen({super.key, required this.type});
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +30,9 @@ class JokesByTypeScreen extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             itemCount: jokes.length,
             itemBuilder: (context, index) {
+              final joke = jokes[index];
+              final isFavorite = favoriteJokes.contains(joke);
+
               return Card(
                 margin: const EdgeInsets.symmetric(vertical: 8.0),
                 elevation: 4,
@@ -37,17 +41,38 @@ class JokesByTypeScreen extends StatelessWidget {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        jokes[index].setup,
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              joke.setup,
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              joke.punchline,
+                              style: const TextStyle(fontSize: 14, color: Colors.grey),
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        jokes[index].punchline,
-                        style: const TextStyle(fontSize: 14, color: Colors.grey),
+                      IconButton(
+                        icon: Icon(
+                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                          color: isFavorite ? Colors.red : Colors.grey,
+                        ),
+                        onPressed: () {
+                          if (isFavorite) {
+                            favoriteJokes.remove(joke);
+                          } else {
+                            favoriteJokes.add(joke);
+                          }
+                          (context as Element).markNeedsBuild();
+                        },
                       ),
                     ],
                   ),
